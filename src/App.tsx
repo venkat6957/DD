@@ -11,6 +11,7 @@ import ReportsPage from './pages/ReportsPage';
 import PatientDetailPage from './pages/PatientDetailPage';
 import PharmacyPage from './pages/PharmacyPage';
 import PharmacyPOSPage from './pages/PharmacyPOSPage';
+import ConfigurePage from './pages/ConfigurePage';
 import NotFoundPage from './pages/NotFoundPage';
 import ReportsPage1 from './pages/ReportsPage1';
 
@@ -59,6 +60,7 @@ function App() {
         <Route path="pharmacy" element={<PharmacyPage />} />
         <Route path="pharmacy-pos" element={<PharmacyPOSPage />} />
         <Route path="reports" element={<ReportsPage />} />
+        <Route path="configure" element={<ConfigurePage />} />
       </Route>
       
       <Route path="*" element={<NotFoundPage />} />

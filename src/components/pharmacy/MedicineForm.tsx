@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Medicine } from '../../types'; // Adjust the import path as needed
+import { useApi } from '../../hooks/useApi';
+import api from '../../services/api';
 
 interface MedicineFormProps {
   medicine?: Partial<Medicine>;
@@ -10,7 +12,7 @@ interface MedicineFormProps {
 const MedicineForm = ({ medicine, onSubmit, onCancel }: MedicineFormProps) => {
   const [formData, setFormData] = useState<Partial<Medicine>>({
     name: medicine?.name || '',
-    type: medicine?.type || 'tablet',
+    type: medicine?.type || '',
     description: medicine?.description || '',
     manufacturer: medicine?.manufacturer || '',
     stock: medicine?.stock || 0,
@@ -21,6 +23,10 @@ const MedicineForm = ({ medicine, onSubmit, onCancel }: MedicineFormProps) => {
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof Medicine, string>>>({});
+
+  // Fetch manufacturers and medicine types
+  const { data: manufacturers = [] } = useApi(() => api.manufacturers.getAll());
+  const { data: medicineTypes = [] } = useApi(() => api.medicineTypes.getAll());
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -121,10 +127,11 @@ const MedicineForm = ({ medicine, onSubmit, onCancel }: MedicineFormProps) => {
             className={`input w-full ${errors.type ? 'border-red-500' : ''}`}
           >
             <option value="">Select type</option>
-            <option value="tablet">Tablet</option>
-            <option value="capsule">Capsule</option>
-            <option value="syrup">Syrup</option>
-            {/* Add more types as needed */}
+            {medicineTypes.map((type: any) => (
+              <option key={type.id} value={type.name}>
+                {type.name}
+              </option>
+            ))}
           </select>
           {errors.type && <p className="mt-1 text-xs text-red-600">{errors.type}</p>}
         </div>
@@ -134,14 +141,20 @@ const MedicineForm = ({ medicine, onSubmit, onCancel }: MedicineFormProps) => {
           <label htmlFor="manufacturer" className="block text-sm font-medium text-neutral-700 mb-2">
             Manufacturer <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
+          <select
             id="manufacturer"
             name="manufacturer"
             value={formData.manufacturer}
             onChange={handleChange}
             className={`input w-full ${errors.manufacturer ? 'border-red-500' : ''}`}
-          />
+          >
+            <option value="">Select manufacturer</option>
+            {manufacturers.map((manufacturer: any) => (
+              <option key={manufacturer.id} value={manufacturer.name}>
+                {manufacturer.name}
+              </option>
+            ))}
+          </select>
           {errors.manufacturer && <p className="mt-1 text-xs text-red-600">{errors.manufacturer}</p>}
         </div>
 

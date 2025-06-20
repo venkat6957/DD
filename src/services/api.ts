@@ -156,6 +156,42 @@ export const medicines = {
   },
 };
 
+export const manufacturers = {
+  getAll: async () => {
+    const response = await api.get('/manufacturers');
+    return response.data;
+  },
+  create: async (manufacturer: any) => {
+    const response = await api.post('/manufacturers', manufacturer);
+    return response.data;
+  },
+  update: async (id: number, manufacturer: any) => {
+    const response = await api.put(`/manufacturers/${id}`, manufacturer);
+    return response.data;
+  },
+  delete: async (id: number) => {
+    await api.delete(`/manufacturers/${id}`);
+  },
+};
+
+export const medicineTypes = {
+  getAll: async () => {
+    const response = await api.get('/medicine-types');
+    return response.data;
+  },
+  create: async (medicineType: any) => {
+    const response = await api.post('/medicine-types', medicineType);
+    return response.data;
+  },
+  update: async (id: number, medicineType: any) => {
+    const response = await api.put(`/medicine-types/${id}`, medicineType);
+    return response.data;
+  },
+  delete: async (id: number) => {
+    await api.delete(`/medicine-types/${id}`);
+  },
+};
+
 export const prescriptions = {
   getAll: async () => {
     const response = await api.get('/prescriptions');
@@ -281,6 +317,8 @@ const apiService = {
   patients,
   appointments,
   medicines,
+  manufacturers,
+  medicineTypes,
   prescriptions,
   pharmacySales,
   pharmacyCustomers,

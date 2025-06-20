@@ -1,4 +1,4 @@
-import { BarChart3, Calendar, Home, Menu, Users, X, Pill, DollarSign } from 'lucide-react';
+import { BarChart3, Calendar, Home, Menu, Users, X, Pill, DollarSign, Settings } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { ToothLogo } from '../common/ToothLogo';
 
@@ -15,6 +15,7 @@ const navigation = [
   { name: 'Pharmacy', href: '/pharmacy', icon: Pill },
   { name: 'Pharmacy POS', href: '/pharmacy-pos', icon: DollarSign },
   { name: 'Reports', href: '/reports', icon: BarChart3 },
+  { name: 'Configure', href: '/configure', icon: Settings },
 ];
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
