@@ -50,6 +50,14 @@ export function useUser(id: number) {
   return useApi(() => api.users.getById(id));
 }
 
+export function useRoles() {
+  return useApi(() => api.roles.getAll());
+}
+
+export function useRole(id: number) {
+  return useApi(() => api.roles.getById(id));
+}
+
 export function usePatients() {
   return useApi(() => api.patients.getAll());
 }

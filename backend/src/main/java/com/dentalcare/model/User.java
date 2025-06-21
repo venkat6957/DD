@@ -21,7 +21,11 @@ public class User {
     private String password;
     
     @Column(nullable = false)
-    private String role;
+    private String role; // Keep for backward compatibility
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private Role roleEntity;
     
     private String avatar;
 }

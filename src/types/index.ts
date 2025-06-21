@@ -6,12 +6,22 @@ export interface AuthState {
   error: string | null;
 }
 
+// Role types
+export interface Role {
+  id: number;
+  name: string;
+  description?: string;
+  permissions: Record<string, boolean>;
+  createdAt: string;
+}
+
 // User types
 export interface User {
   id: number;
   name: string;
   email: string;
   role: string;
+  roleEntity?: Role;
   avatar?: string;
 }
 

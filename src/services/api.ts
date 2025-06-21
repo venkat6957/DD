@@ -40,6 +40,28 @@ export const auth = {
   },
 };
 
+export const roles = {
+  getAll: async () => {
+    const response = await api.get('/roles');
+    return response.data;
+  },
+  getById: async (id: number) => {
+    const response = await api.get(`/roles/${id}`);
+    return response.data;
+  },
+  create: async (role: any) => {
+    const response = await api.post('/roles', role);
+    return response.data;
+  },
+  update: async (id: number, role: any) => {
+    const response = await api.put(`/roles/${id}`, role);
+    return response.data;
+  },
+  delete: async (id: number) => {
+    await api.delete(`/roles/${id}`);
+  },
+};
+
 export const users = {
   getAll: async () => {
     const response = await api.get('/users');
@@ -52,6 +74,17 @@ export const users = {
   getById: async (id: number) => {
     const response = await api.get(`/users/${id}`);
     return response.data;
+  },
+  create: async (user: any) => {
+    const response = await api.post('/users', user);
+    return response.data;
+  },
+  update: async (id: number, user: any) => {
+    const response = await api.put(`/users/${id}`, user);
+    return response.data;
+  },
+  delete: async (id: number) => {
+    await api.delete(`/users/${id}`);
   },
 };
 
@@ -313,6 +346,7 @@ export const amounts = {
 
 const apiService = {
   auth,
+  roles,
   users,
   patients,
   appointments,

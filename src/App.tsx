@@ -12,8 +12,8 @@ import PatientDetailPage from './pages/PatientDetailPage';
 import PharmacyPage from './pages/PharmacyPage';
 import PharmacyPOSPage from './pages/PharmacyPOSPage';
 import ConfigurePage from './pages/ConfigurePage';
+import UsersPage from './pages/UsersPage';
 import NotFoundPage from './pages/NotFoundPage';
-import ReportsPage1 from './pages/ReportsPage1';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -40,7 +40,7 @@ function App() {
     <Routes>
       <Route 
         path="/login" 
-        element={isAuthenticated ? <Navigate to="/dashboard\" replace /> : <LoginPage />} 
+        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} 
       />
       
       <Route 
@@ -51,7 +51,7 @@ function App() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="/dashboard\" replace />} />
+        <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="patients" element={<PatientsPage />} />
         <Route path="patients/:id" element={<PatientDetailPage />} />
@@ -60,6 +60,7 @@ function App() {
         <Route path="pharmacy" element={<PharmacyPage />} />
         <Route path="pharmacy-pos" element={<PharmacyPOSPage />} />
         <Route path="reports" element={<ReportsPage />} />
+        <Route path="users" element={<UsersPage />} />
         <Route path="configure" element={<ConfigurePage />} />
       </Route>
       

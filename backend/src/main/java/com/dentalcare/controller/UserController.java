@@ -23,7 +23,7 @@ public class UserController {
     @GetMapping("/dentists")
     public List<User> getAllDentists() {
         return userService.getAllUsers().stream()
-                .filter(user -> "dentist".equals(user.getRole()) || "admin".equals(user.getRole()))
+                .filter(user -> "dentist".equals(user.getRole()) || "admin".equals(user.getRole()) || "doctor".equals(user.getRole()))
                 .toList();
     }
     
@@ -32,5 +32,24 @@ public class UserController {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+        return userService.updateUser(id, user)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        return userService.deleteUser(id)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
     }
 }

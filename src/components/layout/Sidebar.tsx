@@ -1,24 +1,42 @@
-import { BarChart3, Calendar, Home, Menu, Users, X, Pill, DollarSign, Settings } from 'lucide-react';
+import { BarChart3, Calendar, Home, Menu, Users, X, Pill, DollarSign, Settings, UserPlus } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { ToothLogo } from '../common/ToothLogo';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 }
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: Home },
-  { name: 'Patients', href: '/patients', icon: Users },
-  { name: 'Appointments', href: '/appointments', icon: Calendar },
-  { name: 'Calendar', href: '/calendar', icon: Calendar },
-  { name: 'Pharmacy', href: '/pharmacy', icon: Pill },
-  { name: 'Pharmacy POS', href: '/pharmacy-pos', icon: DollarSign },
-  { name: 'Reports', href: '/reports', icon: BarChart3 },
-  { name: 'Configure', href: '/configure', icon: Settings },
-];
-
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+  const { user } = useAuth();
+
+  // Get user permissions from role entity
+  const permissions = user?.roleEntity?.permissions || {};
+
+  // Define all navigation items with their required permissions
+  const allNavigation = [
+    { name: 'Dashboard', href: '/dashboard', icon: Home, permission: 'dashboard' },
+    { name: 'Patients', href: '/patients', icon: Users, permission: 'patients' },
+    { name: 'Appointments', href: '/appointments', icon: Calendar, permission: 'appointments' },
+    { name: 'Calendar', href: '/calendar', icon: Calendar, permission: 'calendar' },
+    { name: 'Pharmacy', href: '/pharmacy', icon: Pill, permission: 'pharmacy' },
+    { name: 'Pharmacy POS', href: '/pharmacy-pos', icon: DollarSign, permission: 'pharmacy-pos' },
+    { name: 'Reports', href: '/reports', icon: BarChart3, permission: 'reports' },
+    { name: 'Users', href: '/users', icon: UserPlus, permission: 'users' },
+    { name: 'Configure', href: '/configure', icon: Settings, permission: 'configure' },
+  ];
+
+  // Filter navigation based on user permissions
+  const navigation = allNavigation.filter(item => {
+    // If no permissions defined, show all (backward compatibility)
+    if (!permissions || Object.keys(permissions).length === 0) {
+      return true;
+    }
+    // Check if user has permission for this item
+    return permissions[item.permission] === true;
+  });
+
   return (
     <>
       {/* Mobile sidebar overlay */}
@@ -67,16 +85,22 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </nav>
         </div>
 
-        {/* Sidebar footer with gradient accent */}
-        {/* <div className="absolute bottom-0 left-0 right-0 p-4">
+        {/* User info at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 p-4">
           <div className="rounded-2xl bg-gradient-to-r from-primary-500/10 to-purple-500/10 p-4 border border-primary-200/30 backdrop-blur-sm">
-            <h4 className="text-sm font-semibold text-neutral-900 mb-2">Need Help?</h4>
-            <p className="text-xs text-neutral-600 mb-3">Contact our support team for assistance</p>
-            <button className="w-full text-xs bg-gradient-to-r from-primary-500 to-purple-500 text-white py-2 px-3 rounded-lg hover:from-primary-600 hover:to-purple-600 transition-all duration-200 shadow-md hover:shadow-lg">
-              Get Support
-            </button>
+            <div className="flex items-center space-x-3">
+              <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
+                <Users className="h-5 w-5 text-primary-600" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-neutral-900">{user?.name}</p>
+                <p className="text-xs text-neutral-600 capitalize">
+                  {user?.roleEntity?.name || user?.role}
+                </p>
+              </div>
+            </div>
           </div>
-        </div> */}
+        </div>
       </div>
     </>
   );
