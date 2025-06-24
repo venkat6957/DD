@@ -16,7 +16,7 @@ const Layout = () => {
       <div className="flex flex-1 flex-col overflow-hidden lg:pl-64">
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         
-        <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8 custom-scrollbar">
+        <main className="flex-1 overflow-auto p-3 sm:p-4 md:p-6 lg:p-8 custom-scrollbar">
           <div className="container-responsive">
             <Outlet />
           </div>

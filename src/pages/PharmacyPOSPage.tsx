@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Search, Phone, User, Plus, Minus, X } from 'lucide-react';
 import { Medicine, PharmacySale, PharmacySaleItem, PharmacyCustomer } from '../types';
+import ConfirmDialog from '../components/common/ConfirmDialog';
+import AlertDialog from '../components/common/AlertDialog';
 import api from '../services/api';
 
 interface SaleItem {
@@ -22,7 +24,6 @@ const PharmacyPOSPage = () => {
   const [saleItems, setSaleItems] = useState<SaleItem[]>([]);
   const [discount, setDiscount] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showSaleSuccessModal, setShowSaleSuccessModal] = useState(false);
 
   // Customer state
   const [phoneSearch, setPhoneSearch] = useState('');
@@ -37,6 +38,22 @@ const PharmacyPOSPage = () => {
   const [customerError, setCustomerError] = useState<string | null>(null);
   const [isSearchingCustomer, setIsSearchingCustomer] = useState(false);
 
+  // Dialog states
+  const [showStockAlert, setShowStockAlert] = useState(false);
+  const [stockAlertMessage, setStockAlertMessage] = useState('');
+  const [showSaleSuccessDialog, setShowSaleSuccessDialog] = useState(false);
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+  const [alertConfig, setAlertConfig] = useState<{
+    type: 'success' | 'error' | 'warning' | 'info';
+    title: string;
+    message: string;
+  }>({ type: 'info', title: '', message: '' });
+
+  const showAlert = (type: 'success' | 'error' | 'warning' | 'info', title: string, message: string) => {
+    setAlertConfig({ type, title, message });
+    setShowAlertDialog(true);
+  };
+
   const handleMedicineSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchTerm.trim()) {
       try {
@@ -46,6 +63,7 @@ const PharmacyPOSPage = () => {
       } catch (error) {
         console.error('Failed to search medicines:', error);
         setSearchResults([]);
+        showAlert('error', 'Search Error', 'Failed to search medicines. Please try again.');
       } finally {
         setIsSearching(false);
       }
@@ -138,6 +156,7 @@ const PharmacyPOSPage = () => {
       setCustomer(newCustomer);
       setShowCustomerFormModal(false);
       setCustomerError(null);
+      showAlert('success', 'Success', 'Customer created successfully!');
     } catch (error) {
       console.error('Failed to create customer:', error);
       setCustomerError('Failed to create customer');
@@ -166,7 +185,8 @@ const PharmacyPOSPage = () => {
 
     const item = saleItems.find(item => item.medicine.id === medicineId);
     if (item && quantity > item.medicine.stock) {
-      alert(`Only ${item.medicine.stock} units available`);
+      setStockAlertMessage(`Only ${item.medicine.stock} units available for ${item.medicine.name}`);
+      setShowStockAlert(true);
       return;
     }
 
@@ -249,10 +269,10 @@ const PharmacyPOSPage = () => {
       setSearchResults([]);
       setSearchTerm('');
 
-      setShowSaleSuccessModal(true); // Show modal instead of alert
+      setShowSaleSuccessDialog(true);
     } catch (error) {
       console.error('Failed to complete sale:', error);
-      alert('Failed to complete sale. Please try again.');
+      showAlert('error', 'Sale Error', 'Failed to complete sale. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -260,28 +280,28 @@ const PharmacyPOSPage = () => {
 
   return (
     <div className="slide-in">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-neutral-900">Pharmacy POS</h1>
-        <p className="text-sm text-neutral-500">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">Pharmacy POS</h1>
+        <p className="text-xs sm:text-sm text-neutral-500 mt-1">
           Search for medicines and create sales transactions
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         {/* Left side - Medicine search and Current Sale */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Medicine Search */}
-          <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-xl">
-            <h2 className="mb-4 text-lg font-semibold text-neutral-900">
+          <div className="rounded-xl sm:rounded-2xl border border-neutral-200 bg-white p-4 shadow-xl">
+            <h2 className="mb-4 text-base sm:text-lg font-semibold text-neutral-900">
               Search Medicines
             </h2>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <Search className="h-5 w-5 text-neutral-400" />
+                <Search className="h-4 w-4 sm:h-5 sm:w-5 text-neutral-400" />
               </div>
               <input
                 type="text"
-                className="input pl-10 w-full"
+                className="input pl-10 sm:pl-12 w-full text-sm sm:text-base"
                 placeholder="Type medicine name and press Enter..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -293,53 +313,55 @@ const PharmacyPOSPage = () => {
 
           {/* Current Sale (only show if saleItems.length > 0) */}
           {saleItems.length > 0 && (
-            <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-xl">
-              <h2 className="mb-4 text-lg font-semibold text-neutral-900">
+            <div className="rounded-xl sm:rounded-2xl border border-neutral-200 bg-white p-4 shadow-xl">
+              <h2 className="mb-4 text-base sm:text-lg font-semibold text-neutral-900">
                 Current Sale
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {saleItems.map((item) => (
                   <div
                     key={item.medicine.id}
-                    className="flex items-center justify-between rounded-lg border border-neutral-200 p-3"
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between rounded-lg border border-neutral-200 p-3 space-y-3 sm:space-y-0"
                   >
-                    <div className="flex-1">
-                      <p className="font-medium text-neutral-900">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-neutral-900 text-sm sm:text-base">
                         {item.medicine.name}
                       </p>
-                      <p className="text-sm text-neutral-500">
+                      <p className="text-xs sm:text-sm text-neutral-500">
                         ₹{item.medicine.price.toFixed(2)} per {item.medicine.unit}
                       </p>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <button
-                        onClick={() =>
-                          updateQuantity(item.medicine.id, item.quantity - 1)
-                        }
-                        className="rounded-full bg-neutral-100 p-1 text-neutral-600 hover:bg-neutral-200"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </button>
-                      <span className="w-8 text-center font-medium">{item.quantity}</span>
-                      <button
-                        onClick={() =>
-                          updateQuantity(item.medicine.id, item.quantity + 1)
-                        }
-                        className="rounded-full bg-neutral-100 p-1 text-neutral-600 hover:bg-neutral-200"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
+                    <div className="flex items-center justify-between sm:justify-end space-x-3">
+                      <div className="flex items-center space-x-2 sm:space-x-3">
+                        <button
+                          onClick={() =>
+                            updateQuantity(item.medicine.id, item.quantity - 1)
+                          }
+                          className="rounded-full bg-neutral-100 p-1 text-neutral-600 hover:bg-neutral-200 transition-colors"
+                        >
+                          <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
+                        </button>
+                        <span className="w-8 text-center font-medium text-sm sm:text-base">{item.quantity}</span>
+                        <button
+                          onClick={() =>
+                            updateQuantity(item.medicine.id, item.quantity + 1)
+                          }
+                          className="rounded-full bg-neutral-100 p-1 text-neutral-600 hover:bg-neutral-200 transition-colors"
+                        >
+                          <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                        </button>
+                      </div>
                       <button
                         onClick={() => removeMedicineFromSale(item.medicine.id)}
-                        className="rounded-full bg-error-100 p-1 text-error-600 hover:bg-error-200 ml-2"
+                        className="rounded-full bg-error-100 p-1 text-error-600 hover:bg-error-200 transition-colors"
                       >
-                        <X className="h-4 w-4" />
+                        <X className="h-3 w-3 sm:h-4 sm:w-4" />
                       </button>
-                    </div>
-                    <div className="text-right ml-4">
-                      <p className="font-medium text-neutral-900">
-                        ₹{(item.medicine.price * item.quantity).toFixed(2)}
-                      </p>
+                      <div className="text-right min-w-0">
+                        <p className="font-medium text-neutral-900 text-sm sm:text-base">
+                          ₹{(item.medicine.price * item.quantity).toFixed(2)}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -349,21 +371,21 @@ const PharmacyPOSPage = () => {
         </div>
 
         {/* Right side - Customer Details */}
-        <div className="space-y-6">
-          <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-xl">
-            <h2 className="mb-4 text-lg font-semibold text-neutral-900">
+        <div className="space-y-4 sm:space-y-6">
+          <div className="rounded-xl sm:rounded-2xl border border-neutral-200 bg-white p-4 shadow-xl">
+            <h2 className="mb-4 text-base sm:text-lg font-semibold text-neutral-900">
               Customer Details
             </h2>
             {!customer && (
               <div className="space-y-4">
-                <div className="flex space-x-2">
+                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                   <div className="relative flex-grow">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <Phone className="h-5 w-5 text-neutral-400" />
+                      <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-neutral-400" />
                     </div>
                     <input
                       type="tel"
-                      className="input pl-10 w-full"
+                      className="input pl-10 sm:pl-12 w-full text-sm sm:text-base"
                       placeholder="Enter phone number..."
                       value={phoneSearch}
                       onChange={(e) => setPhoneSearch(e.target.value)}
@@ -371,7 +393,7 @@ const PharmacyPOSPage = () => {
                   </div>
                   <button
                     onClick={handlePhoneSearch}
-                    className="btn btn-primary"
+                    className="btn btn-primary w-full sm:w-auto"
                     disabled={isSearchingCustomer}
                   >
                     {isSearchingCustomer ? 'Searching...' : 'Search'}
@@ -385,15 +407,15 @@ const PharmacyPOSPage = () => {
             {customer && (
               <div className="rounded-lg bg-neutral-50 p-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary-100 text-primary-600">
-                      <User className="h-6 w-6" />
+                  <div className="flex items-center min-w-0 flex-1">
+                    <div className="mr-3 sm:mr-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-primary-100 text-primary-600 flex-shrink-0">
+                      <User className="h-5 w-5 sm:h-6 sm:w-6" />
                     </div>
-                    <div>
-                      <h3 className="font-medium text-neutral-900">{customer.name}</h3>
-                      <p className="text-sm text-neutral-500">{customer.phone}</p>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-medium text-neutral-900 text-sm sm:text-base truncate">{customer.name}</h3>
+                      <p className="text-xs sm:text-sm text-neutral-500">{customer.phone}</p>
                       {customer.email && (
-                        <p className="text-sm text-neutral-500">{customer.email}</p>
+                        <p className="text-xs sm:text-sm text-neutral-500 truncate">{customer.email}</p>
                       )}
                     </div>
                   </div>
@@ -402,9 +424,9 @@ const PharmacyPOSPage = () => {
                       setCustomer(null);
                       setPhoneSearch('');
                     }}
-                    className="text-neutral-400 hover:text-neutral-600"
+                    className="text-neutral-400 hover:text-neutral-600 p-1 flex-shrink-0"
                   >
-                    <X className="h-5 w-5" />
+                    <X className="h-4 w-4 sm:h-5 sm:w-5" />
                   </button>
                 </div>
               </div>
@@ -414,36 +436,36 @@ const PharmacyPOSPage = () => {
           {/* Sale Summary and Complete Sale Button */}
           {saleItems.length > 0 && (
             <>
-              <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-xl">
+              <div className="rounded-xl sm:rounded-2xl border border-neutral-200 bg-white p-4 shadow-xl">
                 <div className="space-y-3">
-                  <div className="flex justify-between">
+                  <div className="flex justify-between text-sm sm:text-base">
                     <span className="text-neutral-600">Subtotal:</span>
                     <span className="font-medium">₹{calculateSubtotal().toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between text-sm sm:text-base">
                     <span className="text-neutral-600">SGST (9%):</span>
                     <span className="font-medium">₹{calculateSGST().toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between text-sm sm:text-base">
                     <span className="text-neutral-600">CGST (9%):</span>
                     <span className="font-medium">₹{calculateCGST().toFixed(2)}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-neutral-600">Discount:</span>
+                    <span className="text-neutral-600 text-sm sm:text-base">Discount:</span>
                     <input
                       type="number"
                       min="0"
                       value={discount}
                       onChange={(e) => setDiscount(Number(e.target.value))}
-                      className="input w-24 text-right"
+                      className="input w-20 sm:w-24 text-right text-sm sm:text-base"
                     />
                   </div>
                   <div className="border-t border-neutral-200 pt-3">
                     <div className="flex justify-between">
-                      <span className="text-lg font-semibold text-neutral-900">
+                      <span className="text-base sm:text-lg font-semibold text-neutral-900">
                         Grand Total:
                       </span>
-                      <span className="text-lg font-bold text-primary-600">
+                      <span className="text-base sm:text-lg font-bold text-primary-600">
                         ₹{calculateTotal().toFixed(2)}
                       </span>
                     </div>
@@ -466,12 +488,12 @@ const PharmacyPOSPage = () => {
       {/* Medicine Search Results Modal */}
       {searchResults.length > 0 && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl border border-white/20 max-h-[80vh] overflow-y-auto">
+          <div className="w-full max-w-2xl rounded-xl sm:rounded-2xl bg-white p-4 sm:p-6 shadow-2xl border border-white/20 max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-neutral-900">Select Medicine</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-neutral-900">Select Medicine</h3>
               <button
                 onClick={() => setSearchResults([])}
-                className="btn btn-outline"
+                className="btn btn-outline text-sm sm:text-base"
               >
                 Close
               </button>
@@ -480,13 +502,13 @@ const PharmacyPOSPage = () => {
               {searchResults.map((medicine) => (
                 <div
                   key={medicine.id}
-                  className="flex items-center justify-between rounded-lg border border-neutral-200 p-3 hover:bg-primary-50 transition-colors"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between rounded-lg border border-neutral-200 p-3 hover:bg-primary-50 transition-colors space-y-2 sm:space-y-0"
                 >
-                  <div className="flex-1">
-                    <div className="font-medium text-neutral-900">
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-neutral-900 text-sm sm:text-base">
                       {medicine.name}
                     </div>
-                    <div className="text-sm text-neutral-500">
+                    <div className="text-xs sm:text-sm text-neutral-500">
                       {medicine.type} | Stock: {medicine.stock} {medicine.unit} | ₹{medicine.price.toFixed(2)}
                     </div>
                   </div>
@@ -495,7 +517,7 @@ const PharmacyPOSPage = () => {
                       addMedicineToSale(medicine);
                       setSearchResults([]);
                     }}
-                    className="btn btn-primary px-3 py-1 text-sm"
+                    className="btn btn-primary px-3 py-1 text-sm w-full sm:w-auto"
                   >
                     Select
                   </button>
@@ -509,27 +531,27 @@ const PharmacyPOSPage = () => {
       {/* Customer Form Modal */}
       {showCustomerFormModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-white/20">
+          <div className="w-full max-w-md rounded-xl sm:rounded-2xl bg-white p-4 sm:p-6 shadow-2xl border border-white/20 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-neutral-900">Add New Customer</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-neutral-900">Add New Customer</h3>
               <button
                 onClick={() => {
                   setShowCustomerFormModal(false);
                   setCustomerError(null);
                 }}
-                className="btn btn-outline"
+                className="btn btn-outline text-sm"
               >
                 Close
               </button>
             </div>
             <form onSubmit={handleCustomerSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-neutral-700">
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
                   Name*
                 </label>
                 <input
                   type="text"
-                  className="input mt-1 w-full"
+                  className="input w-full text-sm sm:text-base"
                   value={customerFormData.name}
                   onChange={(e) => setCustomerFormData(prev => ({
                     ...prev,
@@ -539,12 +561,12 @@ const PharmacyPOSPage = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-neutral-700">
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
                   Phone*
                 </label>
                 <input
                   type="tel"
-                  className="input mt-1 w-full"
+                  className="input w-full text-sm sm:text-base"
                   value={customerFormData.phone}
                   onChange={(e) => setCustomerFormData(prev => ({
                     ...prev,
@@ -554,12 +576,12 @@ const PharmacyPOSPage = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-neutral-700">
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
                   Email
                 </label>
                 <input
                   type="email"
-                  className="input mt-1 w-full"
+                  className="input w-full text-sm sm:text-base"
                   value={customerFormData.email}
                   onChange={(e) => setCustomerFormData(prev => ({
                     ...prev,
@@ -568,12 +590,12 @@ const PharmacyPOSPage = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-neutral-700">
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
                   Address
                 </label>
                 <input
                   type="text"
-                  className="input mt-1 w-full"
+                  className="input w-full text-sm sm:text-base"
                   value={customerFormData.address}
                   onChange={(e) => setCustomerFormData(prev => ({
                     ...prev,
@@ -581,20 +603,20 @@ const PharmacyPOSPage = () => {
                   }))}
                 />
               </div>
-              <div className="flex justify-end space-x-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <button
                   type="button"
                   onClick={() => {
                     setShowCustomerFormModal(false);
                     setCustomerError(null);
                   }}
-                  className="btn btn-outline"
+                  className="btn btn-outline w-full sm:w-auto order-2 sm:order-1"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-primary"
+                  className="btn btn-primary w-full sm:w-auto order-1 sm:order-2"
                 >
                   Save Customer
                 </button>
@@ -607,29 +629,35 @@ const PharmacyPOSPage = () => {
         </div>
       )}
 
-      {/* Sale Success Modal */}
-      {showSaleSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl border border-white/20">
-            <h2 className="text-lg font-semibold mb-4 text-success-700">Sale Completed</h2>
-            <p className="mb-6">The sale was completed successfully.</p>
-            <div className="flex justify-end space-x-3">
-              <button
-                className="btn btn-outline"
-                onClick={() => setShowSaleSuccessModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="btn btn-primary"
-                onClick={() => setShowSaleSuccessModal(false)}
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Stock Alert Dialog */}
+      <AlertDialog
+        isOpen={showStockAlert}
+        title="Stock Alert"
+        message={stockAlertMessage}
+        type="warning"
+        onClose={() => setShowStockAlert(false)}
+      />
+
+      {/* Sale Success Dialog */}
+      <ConfirmDialog
+        isOpen={showSaleSuccessDialog}
+        title="Sale Completed"
+        message="The sale was completed successfully."
+        confirmText="OK"
+        cancelText=""
+        type="info"
+        onConfirm={() => setShowSaleSuccessDialog(false)}
+        onCancel={() => setShowSaleSuccessDialog(false)}
+      />
+
+      {/* Alert Dialog */}
+      <AlertDialog
+        isOpen={showAlertDialog}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        type={alertConfig.type}
+        onClose={() => setShowAlertDialog(false)}
+      />
     </div>
   );
 };
