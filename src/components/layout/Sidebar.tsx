@@ -11,9 +11,15 @@ interface SidebarProps {
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const { user } = useAuth();
 
-  // Get user permissions from role entity
-  const permissions = user?.roleEntity?.permissions || {};
-
+    // Get user permissions from role entity
+  let permissions = user?.roleEntity?.permissions || {};
+  if (typeof permissions === 'string') {
+    try {
+      permissions = JSON.parse(permissions);
+    } catch (e) {
+      permissions = {};
+    }
+  }
   // Define all navigation items with their required permissions
   const allNavigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home, permission: 'dashboard' },
