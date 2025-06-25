@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Download, FileText, RefreshCw } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { ReportFilter, ReportPeriod } from '../types';
+import { usePageHeader } from '../hooks/usePageHeader';
 import api from '../services/api';
 
 const ReportsPage = () => {
@@ -24,6 +25,57 @@ const ReportsPage = () => {
   const [showTreatmentByType, setShowTreatmentByType] = useState(true);
 
   const COLORS = ['#0891b2', '#0d9488', '#ffc107', '#f44336', '#9e9e9e'];
+
+  // Set page header with actions
+  usePageHeader({
+    title: 'Reports',
+    subtitle: 'Comprehensive analytics and insights for your dental clinic',
+    actions: (
+      <div className="flex space-x-2 sm:space-x-3">
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => handlePeriodChange('monthly')}
+            className={`btn btn-link px-0 ${
+              filter.period === 'monthly' ? 'font-semibold underline btn-primary' : 'text-neutral-500 text-primary-600'
+            }`}
+          >
+            Monthly
+          </button>
+          <span className="text-neutral-300">|</span>
+          <button
+            onClick={() => handlePeriodChange('quarterly')}
+            className={`btn btn-link px-0 ${
+              filter.period === 'quarterly' ? 'font-semibold underline btn-primary' : 'text-neutral-500 text-primary-600'
+            }`}
+          >
+            Quarterly
+          </button>
+          <span className="text-neutral-300">|</span>
+          <button
+            onClick={() => handlePeriodChange('yearly')}
+            className={`btn btn-link px-0 ${
+              filter.period === 'yearly' ? 'font-semibold underline btn-primary' : 'text-neutral-500 text-primary-600'
+            }`}
+          >
+            Yearly
+          </button>
+        </div>
+        <button
+          onClick={handleRefresh}
+          className="btn btn-outline flex items-center"
+          disabled={isLoading}
+        >
+          <RefreshCw className={`mr-1 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+          <span className="hidden sm:inline">Refresh</span>
+        </button>
+        <button className="btn btn-primary flex items-center">
+          <Download className="mr-1 h-4 w-4" />
+          <span className="hidden sm:inline">Export Reports</span>
+          <span className="sm:hidden">Export</span>
+        </button>
+      </div>
+    ),
+  });
 
   // Fetch data on component mount
   useEffect(() => {
@@ -96,84 +148,38 @@ const ReportsPage = () => {
   }
 
   return (
-    <div className="slide-in">
-      <div className="mb-6 flex flex-col justify-between space-y-4 md:flex-row md:items-center md:space-y-0">
-        <h1 className="text-2xl font-bold text-neutral-900">Reports</h1>
-        <div className="flex space-x-3">
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => handlePeriodChange('monthly')}
-              className={`btn btn-link  px-0 ${
-                filter.period === 'monthly' ? 'font-semibold underline btn-primary' : 'text-neutral-500 text-primary-600'
-              }`}
-            >
-              Monthly
-            </button>
-            <span className="text-neutral-300">|</span>
-            <button
-              onClick={() => handlePeriodChange('quarterly')}
-              className={`btn btn-link  px-0 ${
-                filter.period === 'quarterly' ? 'font-semibold underline btn-primary' : 'text-neutral-500 text-primary-600'
-              }`}
-            >
-              Quarterly
-            </button>
-            <span className="text-neutral-300">|</span>
-            <button
-              onClick={() => handlePeriodChange('yearly')}
-              className={`btn btn-link px-0 ${
-                filter.period === 'yearly' ? 'font-semibold underline btn-primary' : 'text-neutral-500 text-primary-600'
-              }`}
-            >
-              Yearly
-            </button>
-          </div>
-          <button
-            onClick={handleRefresh}
-            className="btn btn-outline flex items-center"
-            disabled={isLoading}
-          >
-            <RefreshCw className={`mr-1 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-            Refresh
-          </button>
-          <button className="btn btn-primary flex items-center">
-            <Download className="mr-1 h-4 w-4" />
-            Export Reports
-          </button>
-        </div>
-      </div>
-
-      <div className="grid gap-6">
+    <div className="slide-in space-y-4 sm:space-y-6">
+      <div className="grid gap-4 sm:gap-6">
         {/* Patient Statistics */}
         <div className="card">
-          <h2 className="mb-6 text-xl font-bold text-neutral-900">Patient Statistics</h2>
+          <h2 className="mb-4 sm:mb-6 text-lg sm:text-xl font-bold text-neutral-900">Patient Statistics</h2>
           {patientStats && (
             <div>
-              <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="mb-4 sm:mb-6 grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Total Patients</h3>
-                  <p className="mt-2 text-3xl font-bold text-primary-600">{patientStats?.totalPatients ?? 0}</p>
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Total Patients</h3>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-primary-600">{patientStats?.totalPatients ?? 0}</p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">New Patients</h3>
-                  <p className="mt-2 text-3xl font-bold text-secondary-600">{patientStats.newPatients}</p>
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">New Patients</h3>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-secondary-600">{patientStats.newPatients}</p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Returning Patients</h3>
-                  <p className="mt-2 text-3xl font-bold text-accent-600">{patientStats.returningPatients}</p>
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Returning Patients</h3>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-accent-600">{patientStats.returningPatients}</p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Average Age</h3>
-                  <p className="mt-2 text-3xl font-bold text-neutral-900">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Average Age</h3>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-neutral-900">
                     {Math.round(patientStats.averageAge)}
                   </p>
                 </div>
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div>
-                  <h3 className="mb-4 text-lg font-semibold text-neutral-900">Gender Distribution</h3>
-                  <div className="h-64">
+                  <h3 className="mb-4 text-base sm:text-lg font-semibold text-neutral-900">Gender Distribution</h3>
+                  <div className="h-48 sm:h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       {(patientStats?.genderDistribution && Object.values(patientStats.genderDistribution).some(v => v > 0)) ? (
                         <PieChart>
@@ -207,8 +213,8 @@ const ReportsPage = () => {
                 </div>
 
                 <div>
-                  <h3 className="mb-4 text-lg font-semibold text-neutral-900">Patient Trends</h3>
-                  <div className="h-64">
+                  <h3 className="mb-4 text-base sm:text-lg font-semibold text-neutral-900">Patient Trends</h3>
+                  <div className="h-48 sm:h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={Array.isArray(patientStats?.monthlyTrends) ? patientStats.monthlyTrends : []}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -239,40 +245,40 @@ const ReportsPage = () => {
 
         {/* Appointment Statistics */}
         <div className="card">
-          <h2 className="mb-6 text-xl font-bold text-neutral-900">Appointment Summary</h2>
+          <h2 className="mb-4 sm:mb-6 text-lg sm:text-xl font-bold text-neutral-900">Appointment Summary</h2>
           {appointmentStats && (
             <>
-              <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="mb-4 sm:mb-6 grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Total Appointments</h3>
-                  <p className="mt-2 text-3xl font-bold text-primary-600">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Total Appointments</h3>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-primary-600">
                     {appointmentStats.totalAppointments}
                   </p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Completed</h3>
-                  <p className="mt-2 text-3xl font-bold text-success-600">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Completed</h3>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-success-600">
                     {appointmentStats.completedAppointments}
                   </p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Cancelled</h3>
-                  <p className="mt-2 text-3xl font-bold text-error-600">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Cancelled</h3>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-error-600">
                     {appointmentStats.cancelledAppointments}
                   </p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">No Show</h3>
-                  <p className="mt-2 text-3xl font-bold text-warning-600">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">No Show</h3>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-warning-600">
                     {appointmentStats.noShowAppointments}
                   </p>
                 </div>
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div>
                 <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-neutral-900">
+                  <h3 className="text-base sm:text-lg font-semibold text-neutral-900">
                     {showTreatmentByType ? 'Treatments by Type' : 'Appointments by Type'}
                   </h3>
                   <button
@@ -282,7 +288,7 @@ const ReportsPage = () => {
                     {showTreatmentByType ? 'Show Appointments by Type' : 'Show Treatments by Type'}
                   </button>
                 </div>
-                <div className="h-64">
+                <div className="h-48 sm:h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
@@ -320,8 +326,8 @@ const ReportsPage = () => {
               </div>
 
                 <div>
-                  <h3 className="mb-4 text-lg font-semibold text-neutral-900">Monthly Trends</h3>
-                  <div className="h-64">
+                  <h3 className="mb-4 text-base sm:text-lg font-semibold text-neutral-900">Monthly Trends</h3>
+                  <div className="h-48 sm:h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={appointmentStats.monthlyTrends}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -354,46 +360,46 @@ const ReportsPage = () => {
 
         {/* Financial Overview */}
         <div className="card">
-          <h2 className="mb-6 text-xl font-bold text-neutral-900">Financial Overview</h2>
+          <h2 className="mb-4 sm:mb-6 text-lg sm:text-xl font-bold text-neutral-900">Financial Overview</h2>
           {financialStats && (
             <>
-              <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="mb-4 sm:mb-6 grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-5">
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Total Revenue</h3>
-                  <p className="mt-2 text-3xl font-bold text-primary-600">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Total Revenue</h3>
+                  <p className="mt-2 text-xl sm:text-3xl font-bold text-primary-600">
                     ₹{financialStats.totalRevenue.toFixed(2)}
                   </p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Appointment Revenue</h3>
-                  <p className="mt-2 text-3xl font-bold text-secondary-600">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Appointment Revenue</h3>
+                  <p className="mt-2 text-xl sm:text-3xl font-bold text-secondary-600">
                     ₹{financialStats.appointmentRevenue.toFixed(2)}
                   </p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Pharmacy Revenue</h3>
-                  <p className="mt-2 text-3xl font-bold text-accent-600">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Pharmacy Revenue</h3>
+                  <p className="mt-2 text-xl sm:text-3xl font-bold text-accent-600">
                     ₹{financialStats.pharmacyRevenue.toFixed(2)}
                   </p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Online Payments</h3>
-                  <p className="mt-2 text-3xl font-bold text-primary-600">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Online Payments</h3>
+                  <p className="mt-2 text-xl sm:text-3xl font-bold text-primary-600">
                     ₹{financialStats.onlineAmount?.toFixed(2) ?? '0.00'}
                   </p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Cash Payments</h3>
-                  <p className="mt-2 text-3xl font-bold text-secondary-600">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Cash Payments</h3>
+                  <p className="mt-2 text-xl sm:text-3xl font-bold text-secondary-600">
                     ₹{financialStats.cashAmount?.toFixed(2) ?? '0.00'}
                   </p>
                 </div>
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div>
-                  <h3 className="mb-4 text-lg font-semibold text-neutral-900">Revenue Trends</h3>
-                  <div className="h-64">
+                  <h3 className="mb-4 text-base sm:text-lg font-semibold text-neutral-900">Revenue Trends</h3>
+                  <div className="h-48 sm:h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={financialStats.monthlyTrends}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -425,8 +431,8 @@ const ReportsPage = () => {
                 </div>
 
                 <div>
-                  <h3 className="mb-4 text-lg font-semibold text-neutral-900">Top Procedures</h3>
-                  <div className="h-64">
+                  <h3 className="mb-4 text-base sm:text-lg font-semibold text-neutral-900">Top Procedures</h3>
+                  <div className="h-48 sm:h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={financialStats?.topProcedures ?? []}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -446,31 +452,32 @@ const ReportsPage = () => {
 
         {/* Pharmacy Report */}
         <div className="card">
-          <h2 className="mb-6 text-xl font-bold text-neutral-900">Pharmacy Report</h2>
+          <h2 className="mb-4 sm:mb-6 text-lg sm:text-xl font-bold text-neutral-900">Pharmacy Report</h2>
           {pharmacyStats && (
             <>
-              <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="mb-4 sm:mb-6 grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Total Sales</h3>
-                  <p className="mt-2 text-3xl font-bold text-primary-600">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Total Sales</h3>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-primary-600">
                     {pharmacyStats.totalSales}
                   </p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Total Revenue</h3>
-                  <p className="mt-2 text-3xl font-bold text-secondary-600">
+                
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Total Revenue</h3>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-secondary-600">
                     ₹{Number(pharmacyStats.totalRevenue).toFixed(2)}
                   </p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Avg. Revenue per Sale</h3>
-                  <p className="mt-2 text-3xl font-bold text-accent-600">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Avg. Revenue per Sale</h3>
+                  <p className="mt-2 text-2xl sm:text-3xl font-bold text-accent-600">
                     ₹{Number(pharmacyStats.averageSaleValue ?? pharmacyStats.averageRevenuePerSale ?? 0).toFixed(2)}
                   </p>
                 </div>
                 <div className="stats-card">
-                  <h3 className="text-lg font-semibold text-neutral-900">Top Selling Medicine</h3>
-                  <p className="mt-2 text-3xl font-bold text-neutral-900">
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900">Top Selling Medicine</h3>
+                  <p className="mt-2 text-xl sm:text-2xl font-bold text-neutral-900">
                     {pharmacyStats.topSellingMedicines && pharmacyStats.topSellingMedicines.length > 0
                       ? pharmacyStats.topSellingMedicines[0].medicineName
                       : 'N/A'}
@@ -478,10 +485,10 @@ const ReportsPage = () => {
                 </div>
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div>
-                  <h3 className="mb-4 text-lg font-semibold text-neutral-900">Sales Trends</h3>
-                  <div className="h-64">
+                  <h3 className="mb-4 text-base sm:text-lg font-semibold text-neutral-900">Sales Trends</h3>
+                  <div className="h-48 sm:h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={pharmacyStats.monthlyTrends}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -526,8 +533,8 @@ const ReportsPage = () => {
                 </div>
 
                 <div>
-                  <h3 className="mb-4 text-lg font-semibold text-neutral-900">Top Medicines</h3>
-                  <div className="h-64">
+                  <h3 className="mb-4 text-base sm:text-lg font-semibold text-neutral-900">Top Medicines</h3>
+                  <div className="h-48 sm:h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={pharmacyStats.topSellingMedicines ?? []}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -544,71 +551,75 @@ const ReportsPage = () => {
               </div>
 
               {pharmacyStats.stockAlerts.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="mb-4 text-lg font-semibold text-neutral-900">Stock Alerts</h3>
+                <div className="mt-4 sm:mt-6">
+                  <h3 className="mb-4 text-base sm:text-lg font-semibold text-neutral-900">Stock Alerts</h3>
                   <div className="overflow-hidden rounded-lg border border-neutral-200">
-                    <table className="min-w-full divide-y divide-neutral-200">
-                      <thead className="bg-neutral-50">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
-                            Medicine
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
-                            Current Stock
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
-                            Reorder Point
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-neutral-200 bg-white">
-                        {pharmacyStats.stockAlerts.map((alert: any) => (
-                          <tr key={alert.medicineId}>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-900">
-                              {alert.medicineName}
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm text-error-600">
-                              {alert.currentStock}
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500">
-                              {alert.reorderPoint}
-                            </td>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-neutral-200">
+                        <thead className="bg-neutral-50">
+                          <tr>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                              Medicine
+                            </th>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                              Current Stock
+                            </th>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                              Reorder Point
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="divide-y divide-neutral-200 bg-white">
+                          {pharmacyStats.stockAlerts.map((alert: any) => (
+                            <tr key={alert.medicineId}>
+                              <td className="whitespace-nowrap px-4 sm:px-6 py-4 text-sm text-neutral-900">
+                                {alert.medicineName}
+                              </td>
+                              <td className="whitespace-nowrap px-4 sm:px-6 py-4 text-sm text-error-600">
+                                {alert.currentStock}
+                              </td>
+                              <td className="whitespace-nowrap px-4 sm:px-6 py-4 text-sm text-neutral-500">
+                                {alert.reorderPoint}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               )}
 
               {pharmacyStats.expiryAlerts && pharmacyStats.expiryAlerts.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="mb-4 text-lg font-semibold text-neutral-900">Expiry Alerts</h3>
+                <div className="mt-4 sm:mt-6">
+                  <h3 className="mb-4 text-base sm:text-lg font-semibold text-neutral-900">Expiry Alerts</h3>
                   <div className="overflow-hidden rounded-lg border border-neutral-200">
-                    <table className="min-w-full divide-y divide-neutral-200">
-                      <thead className="bg-neutral-50">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
-                            Medicine
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
-                            Expiry Date
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-neutral-200 bg-white">
-                        {pharmacyStats.expiryAlerts.map((alert: any) => (
-                          <tr key={alert.medicineId}>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-900">
-                              {alert.medicineName}
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm text-error-600">
-                              {alert.expiryDate}
-                            </td>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-neutral-200">
+                        <thead className="bg-neutral-50">
+                          <tr>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                              Medicine
+                            </th>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                              Expiry Date
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="divide-y divide-neutral-200 bg-white">
+                          {pharmacyStats.expiryAlerts.map((alert: any) => (
+                            <tr key={alert.medicineId}>
+                              <td className="whitespace-nowrap px-4 sm:px-6 py-4 text-sm text-neutral-900">
+                                {alert.medicineName}
+                              </td>
+                              <td className="whitespace-nowrap px-4 sm:px-6 py-4 text-sm text-error-600">
+                                {alert.expiryDate}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               )}

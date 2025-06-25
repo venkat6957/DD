@@ -4,6 +4,7 @@ import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, en
 import { Appointment, CalendarViewType } from '../types';
 import AppointmentForm from '../components/appointments/AppointmentForm';
 import { useAppointmentsByDate, useAppointmentsByWeek, useAppointmentsByMonth } from '../hooks/useApi';
+import { usePageHeader } from '../hooks/usePageHeader';
 import api from '../services/api';
 import { Link } from 'react-router-dom';
 
@@ -66,6 +67,29 @@ const CalendarPage = () => {
       refetchDay();
     }
   };
+
+  // Set page header with actions
+  usePageHeader({
+    title: 'Calendar',
+    subtitle: 'View and manage all appointments in calendar format',
+    actions: (
+      <div className="flex space-x-2 sm:space-x-3">
+        <Link to="/appointments" className="btn btn-outline flex items-center">
+          <Calendar className="mr-1 h-4 w-4" />
+          <span className="hidden sm:inline">Appointment List</span>
+          <span className="sm:hidden">List</span>
+        </Link>
+        <button
+          onClick={() => setShowForm(true)}
+          className="btn btn-primary flex items-center"
+        >
+          <Plus className="mr-1 h-4 w-4" />
+          <span className="hidden sm:inline">New Appointment</span>
+          <span className="sm:hidden">New</span>
+        </button>
+      </div>
+    ),
+  });
 
   // Effect to refetch data when date or view changes
   useEffect(() => {
@@ -366,38 +390,16 @@ const CalendarPage = () => {
   }
 
   return (
-    <div className="slide-in">
-      <div className="mb-6 flex flex-col justify-between space-y-4 md:flex-row md:items-center md:space-y-0">
-        <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Calendar</h1>
-          <p className="text-sm text-neutral-500">
-            View and manage all appointments in calendar format
-          </p>
-        </div>
-        <div className="flex space-x-3">
-          <Link to="/appointments" className="btn btn-outline flex items-center">
-            <Calendar className="mr-1 h-4 w-4" />
-            Appointment List
-          </Link>
-          <button
-            onClick={() => setShowForm(true)}
-            className="btn btn-primary flex items-center"
-          >
-            <Plus className="mr-1 h-4 w-4" />
-            New Appointment
-          </button>
-        </div>
-      </div>
-
+    <div className="slide-in space-y-4 sm:space-y-6">
       {/* Calendar controls */}
-      <div className="mb-6 flex flex-wrap items-center justify-between space-y-2 md:space-y-0">
+      <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
         <div className="flex items-center space-x-2">
           <button
             onClick={handlePrevious}
             className="btn btn-outline p-2 rounded-full"
             aria-label="Previous"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
           <button
             onClick={handleToday}
@@ -410,9 +412,9 @@ const CalendarPage = () => {
             className="btn btn-outline p-2 rounded-full"
             aria-label="Next"
           >
-            <ChevronRight className="h-5 w-5" />
+            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
-          <h2 className="text-lg font-semibold text-neutral-900 ml-4">
+          <h2 className="text-base sm:text-lg font-semibold text-neutral-900 ml-4">
             {viewType === 'month'
               ? format(currentDate, 'MMMM yyyy')
               : viewType === 'week'

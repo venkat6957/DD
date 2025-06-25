@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAppointments, usePatients } from '../hooks/useApi';
 import { DashboardStats } from '../types';
+import { usePageHeader } from '../hooks/usePageHeader';
 
 const DashboardPage = () => {
   const { data: appointments = [], isLoading: isLoadingAppointments } = useAppointments();
@@ -12,6 +13,17 @@ const DashboardPage = () => {
   const [showTreatmentByType, setShowTreatmentByType] = useState(true);
   
   const COLORS = ['#2563eb', '#7c3aed', '#fb3c2d', '#10b981', '#f59e42'];
+
+  // Set page header
+  usePageHeader({
+    title: 'Dashboard',
+    subtitle: `Welcome back! Here's what's happening at your clinic today. ${new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })}`,
+  });
 
   useEffect(() => {
     if (!isLoadingAppointments && !isLoadingPatients) {
@@ -98,25 +110,7 @@ const DashboardPage = () => {
   }
 
   return (
-    <div className="slide-in space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-        <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Dashboard</h1>
-          <p className="text-sm text-neutral-500">
-            Welcome back! Here's what's happening at your clinic today.
-          </p>
-        </div>
-        <div className="text-sm text-neutral-500 bg-white/50 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
-          {new Date().toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </div>
-      </div>
-
+    <div className="slide-in space-y-4 sm:space-y-6">
       {/* Stats Overview */}
       <div className="grid-responsive">
         <div className="stats-card border-l-4 border-primary-500">
@@ -187,10 +181,10 @@ const DashboardPage = () => {
       </div>
 
       {/* Main content grid */}
-      <div className="grid-responsive-2 gap-6">
+      <div className="grid-responsive-2 gap-4 sm:gap-6">
         {/* Upcoming Appointments */}
         <div className="card">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-4 sm:mb-6 flex items-center justify-between">
             <h2 className="text-responsive-lg font-semibold text-neutral-900">Upcoming Appointments</h2>
             <Link to="/appointments" className="text-xs font-medium text-primary-600 hover:text-primary-700 transition-colors duration-200 bg-primary-50 px-3 py-1 rounded-lg">
               View All
@@ -205,16 +199,16 @@ const DashboardPage = () => {
               <table className="w-full divide-y divide-neutral-200/50 table-auto">
                 <thead className="bg-gradient-to-r from-neutral-50 to-neutral-100/50">
                   <tr>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <th scope="col" className="px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
                       Patient
                     </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <th scope="col" className="px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
                       Date & Time
                     </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <th scope="col" className="px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
                       Type
                     </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <th scope="col" className="px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
                       Status
                     </th>
                   </tr>
@@ -222,17 +216,17 @@ const DashboardPage = () => {
                 <tbody className="divide-y divide-neutral-200/50 bg-white/50">
                   {stats.upcomingAppointments.map((appointment) => (
                     <tr key={appointment.id} className="hover:bg-primary-50/30 transition-colors duration-200">
-                      <td className="whitespace-nowrap px-4 py-3">
+                      <td className="whitespace-nowrap px-3 sm:px-4 py-3">
                         <div className="flex items-center">
-                          <div className="h-8 w-8 flex-shrink-0 rounded-xl bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
-                            <User className="h-4 w-4 text-neutral-500" />
+                          <div className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0 rounded-xl bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
+                            <User className="h-3 w-3 sm:h-4 sm:w-4 text-neutral-500" />
                           </div>
-                          <div className="ml-3">
-                            <p className="text-sm font-medium text-neutral-900">{appointment.patientName}</p>
+                          <div className="ml-2 sm:ml-3">
+                            <p className="text-xs sm:text-sm font-medium text-neutral-900">{appointment.patientName}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-sm text-neutral-500">
+                      <td className="whitespace-nowrap px-3 sm:px-4 py-3 text-xs sm:text-sm text-neutral-500">
                         {new Date(`${appointment.date}T${appointment.startTime}`).toLocaleString('en-US', {
                           month: 'short',
                           day: 'numeric',
@@ -241,14 +235,14 @@ const DashboardPage = () => {
                           hour12: true,
                         })}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3">
-                        <span className="inline-flex rounded-full bg-gradient-to-r from-primary-100 to-purple-100 px-3 py-1 text-xs font-semibold text-primary-800">
+                      <td className="whitespace-nowrap px-3 sm:px-4 py-3">
+                        <span className="inline-flex rounded-full bg-gradient-to-r from-primary-100 to-purple-100 px-2 sm:px-3 py-1 text-xs font-semibold text-primary-800">
                           {appointment.type.replace('-', ' ')}
                         </span>
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3">
+                      <td className="whitespace-nowrap px-3 sm:px-4 py-3">
                         <span
-                          className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                          className={`inline-flex rounded-full px-2 sm:px-3 py-1 text-xs font-semibold ${
                             appointment.status === 'confirmed'
                               ? 'bg-gradient-to-r from-success-100 to-success-200 text-success-800'
                               : appointment.status === 'scheduled'
@@ -271,7 +265,7 @@ const DashboardPage = () => {
 
         {/* Recent Patients */}
         <div className="card">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-4 sm:mb-6 flex items-center justify-between">
             <h2 className="text-responsive-lg font-semibold text-neutral-900">Recent Patients</h2>
             <Link to="/patients" className="text-xs font-medium text-primary-600 hover:text-primary-700 transition-colors duration-200 bg-primary-50 px-3 py-1 rounded-lg">
               View All
@@ -282,13 +276,13 @@ const DashboardPage = () => {
               <table className="min-w-full divide-y divide-neutral-200/50">
                 <thead className="bg-gradient-to-r from-neutral-50 to-neutral-100/50">
                   <tr>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <th scope="col" className="px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
                       Name
                     </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <th scope="col" className="px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
                       Contact
                     </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <th scope="col" className="px-3 sm:px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
                       Last Visit
                     </th>
                   </tr>
@@ -296,22 +290,22 @@ const DashboardPage = () => {
                 <tbody className="divide-y divide-neutral-200/50 bg-white/50">
                   {stats.recentPatients.map((patient) => (
                     <tr key={patient.id} className="hover:bg-primary-50/30 transition-colors duration-200">
-                      <td className="whitespace-nowrap px-4 py-3">
+                      <td className="whitespace-nowrap px-3 sm:px-4 py-3">
                         <div className="flex items-center">
-                          <div className="h-8 w-8 flex-shrink-0 rounded-xl bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
-                            <User className="h-4 w-4 text-neutral-500" />
+                          <div className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0 rounded-xl bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
+                            <User className="h-3 w-3 sm:h-4 sm:w-4 text-neutral-500" />
                           </div>
-                          <div className="ml-3">
-                            <p className="text-sm font-medium text-neutral-900">
+                          <div className="ml-2 sm:ml-3">
+                            <p className="text-xs sm:text-sm font-medium text-neutral-900">
                               {patient.firstName} {patient.lastName}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-sm text-neutral-500">
+                      <td className="whitespace-nowrap px-3 sm:px-4 py-3 text-xs sm:text-sm text-neutral-500">
                         {patient.phone}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-sm text-neutral-500">
+                      <td className="whitespace-nowrap px-3 sm:px-4 py-3 text-xs sm:text-sm text-neutral-500">
                         {patient.lastVisit
                           ? new Date(patient.lastVisit).toLocaleDateString('en-US', {
                               month: 'short',
@@ -330,7 +324,7 @@ const DashboardPage = () => {
       </div>
 
       {/* Charts */}
-      <div className="grid-responsive-2 gap-6">
+      <div className="grid-responsive-2 gap-4 sm:gap-6">
         {/* Appointments by Type */}
         <div className="card">
           <div className="mb-4 flex items-center justify-between">
@@ -369,7 +363,7 @@ const DashboardPage = () => {
 
         {/* Appointments by Status */}
         <div className="card">
-          <h2 className="mb-6 text-responsive-lg font-semibold text-neutral-900">Appointments by Status</h2>
+          <h2 className="mb-4 sm:mb-6 text-responsive-lg font-semibold text-neutral-900">Appointments by Status</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
