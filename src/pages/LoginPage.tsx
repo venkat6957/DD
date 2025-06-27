@@ -25,9 +25,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-stretch justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-white">
+    <div className="min-h-screen flex flex-col md:flex-row items-stretch justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-white">
       {/* Left: Logo and Welcome */}
-      <div className="md:w-1/2 flex flex-col items-center justify-center p-6 md:p-10 bg-gradient-to-br from-primary-500 via-purple-500 to-accent-500 text-white relative">
+      <div className="hidden md:flex md:w-1/2 flex-col items-center justify-center p-6 md:p-10 bg-gradient-to-br from-primary-500 via-purple-500 to-accent-500 text-white relative">
         <div className="absolute top-2 left-2 md:top-4 md:left-4 hidden md:block z-10">
           <img src="images/tooth-logo.svg" alt="Tooth Icon" className="h-10 w-10 md:h-16 md:w-16 drop-shadow-xl" />
         </div>
@@ -43,7 +43,7 @@ const LoginPage = () => {
         </div>
       </div>
       {/* Right: Login Form */}
-      <div className="md:w-1/2 flex flex-col justify-between p-0 md:p-0 min-h-screen bg-transparent">
+      <div className="w-full md:w-1/2 flex flex-col justify-between p-0 md:p-0 min-h-screen bg-transparent">
         <div className="flex-1 flex items-center justify-center p-4 md:p-12">
           <div className="w-full max-w-md bg-white/90 rounded-2xl shadow-xl p-6 md:p-10">
             <h2 className="text-2xl font-bold text-blue-900 mb-8 text-center">Sign in to your account</h2>

@@ -54,11 +54,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       />
 
       <div
-        className={`fixed inset-y-0 left-0 z-20 w-64 transform overflow-y-auto glass-sidebar transition-transform lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-20 w-64 max-w-full transform overflow-y-auto glass-sidebar transition-transform lg:translate-x-0 flex flex-col ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4 border-b border-white/20">
+        <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4 border-b border-white/20 flex-shrink-0">
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* <ToothLogo className="h-6 w-6 sm:h-8 sm:w-8" /> */}
              <img src="images/tooth-logo.svg" alt="Tooth Icon" className="h-6 w-6 sm:h-8 sm:w-8" />
@@ -74,7 +74,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </button>
         </div>
 
-        <div className="py-4 sm:py-6 px-3 sm:px-4">
+        <div className="py-4 sm:py-6 px-3 sm:px-4 flex-1 overflow-y-auto">
           <nav className="space-y-1 sm:space-y-2">
             {navigation.map((item) => (
               <NavLink
@@ -93,7 +93,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         </div>
 
         {/* User info at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+        <div className="p-3 sm:p-4 w-full flex-shrink-0">
           <div className="rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary-500/10 to-purple-500/10 p-3 sm:p-4 border border-primary-200/30 backdrop-blur-sm">
             <div className="flex items-center space-x-2 sm:space-x-3">
               <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
