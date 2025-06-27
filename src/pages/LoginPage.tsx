@@ -32,7 +32,7 @@ const LoginPage = () => {
           <img src="images/tooth-logo.svg" alt="Tooth Icon" className="h-10 w-10 md:h-16 md:w-16 drop-shadow-xl" />
         </div>
         <div className="flex flex-col items-center justify-center flex-1 gap-6 mt-4 mb-4 md:mt-6 md:mb-6">
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-2 tracking-tight">Kadali Health</h1>
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-2 tracking-tight">K-Health</h1>
           <p className="text-lg md:text-2xl font-medium opacity-90 mb-4 text-center max-w-xs md:max-w-md">
             Welcome Back!<br />
             Log in to manage your appointments and patient records.

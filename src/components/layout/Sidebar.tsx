@@ -62,7 +62,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* <ToothLogo className="h-6 w-6 sm:h-8 sm:w-8" /> */}
              <img src="images/tooth-logo.svg" alt="Tooth Icon" className="h-6 w-6 sm:h-8 sm:w-8" />
-            <span className="text-lg sm:text-xl font-bold gradient-text">Kadali Health</span>
+            <span className="text-lg sm:text-xl font-bold gradient-text">K-Health</span>
           </div>
           <button
             type="button"
