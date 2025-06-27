@@ -30,7 +30,7 @@ const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
           </button>
           
           <div className="flex items-center lg:hidden">
-            <span className="text-lg sm:text-xl font-bold gradient-text">DentalCare</span>
+            <span className="text-lg sm:text-xl font-bold gradient-text">K-Health</span>
           </div>
 
           {/* Dynamic page title - only show on larger screens when available */}
