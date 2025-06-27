@@ -15,6 +15,8 @@ api.interceptors.request.use(
     // Add CORS headers to every request
     config.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173';
     config.headers['Access-Control-Allow-Credentials'] = 'true';
+    // Add production frontend URL for CORS
+    config.headers['Access-Control-Allow-Origin'] = 'https://dd-three-liart.vercel.app';
     return config;
   },
   (error) => {
