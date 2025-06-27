@@ -16,6 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
         
         // Allow all origins for development - restrict this in production
         config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedOrigin("https://dd-three-liart.vercel.app");
         
         // Allow credentials (cookies, authorization headers, etc.)
         config.setAllowCredentials(true);
