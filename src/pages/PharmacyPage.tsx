@@ -28,7 +28,7 @@ const PharmacyPage = () => {
   // Set page header with actions
   usePageHeader({
     title: 'Pharmacy Stock',
-    subtitle: `Showing ${startIndex + 1} to ${Math.min(startIndex + ITEMS_PER_PAGE, filteredMedicines.length)} of ${filteredMedicines.length} medicines`,
+    subtitle: 'Manage your pharmacy medicines and stock levels',
     actions: (
       <button
         onClick={() => setShowForm(true)}

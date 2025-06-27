@@ -26,6 +26,60 @@ const ReportsPage = () => {
 
   const COLORS = ['#0891b2', '#0d9488', '#ffc107', '#f44336', '#9e9e9e'];
 
+  // Move handleRefresh and handlePeriodChange above usePageHeader
+  const handleRefresh = async () => {
+    setIsLoading(true);
+    setError(null); // Reset error before fetching
+    try {
+      const [patients, appointments, financial, pharmacy] = await Promise.all([
+        api.reports.getPatientStatistics(filter),
+        api.reports.getAppointmentStatistics(filter),
+        api.reports.getFinancialStatistics(filter),
+        api.reports.getPharmacyStatistics(filter)
+      ]);
+
+      setPatientStats(patients);
+      setAppointmentStats(appointments);
+      setFinancialStats(financial);
+      setPharmacyStats(pharmacy);
+    } catch (err) {
+      setError('Failed to load reports. Please try again later.');
+      console.error('Failed to fetch reports:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePeriodChange = (period: ReportPeriod) => {
+    const today = new Date();
+    let startDate = new Date();
+    let endDate = new Date();
+
+    switch (period) {
+      case 'monthly':
+        startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        break;
+      case 'quarterly':
+        startDate = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        break;
+      case 'yearly':
+        startDate = new Date(today.getFullYear(), 0, 1);
+        endDate = new Date(today.getFullYear(), 11, 31);
+        break;
+    }
+
+    const newFilter = {
+      period,
+      startDate: startDate.toISOString().split('T')[0],
+      endDate: endDate.toISOString().split('T')[0]
+    };
+
+    setFilter(newFilter);
+    handleRefresh();
+  };
+
   // Set page header with actions
   usePageHeader({
     title: 'Reports',
@@ -81,59 +135,6 @@ const ReportsPage = () => {
   useEffect(() => {
     handleRefresh();
   }, []);
-
-  const handleRefresh = async () => {
-    setIsLoading(true);
-    setError(null); // Reset error before fetching
-    try {
-      const [patients, appointments, financial, pharmacy] = await Promise.all([
-        api.reports.getPatientStatistics(filter),
-        api.reports.getAppointmentStatistics(filter),
-        api.reports.getFinancialStatistics(filter),
-        api.reports.getPharmacyStatistics(filter)
-      ]);
-
-      setPatientStats(patients);
-      setAppointmentStats(appointments);
-      setFinancialStats(financial);
-      setPharmacyStats(pharmacy);
-    } catch (err) {
-      setError('Failed to load reports. Please try again later.');
-      console.error('Failed to fetch reports:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handlePeriodChange = (period: ReportPeriod) => {
-    const today = new Date();
-    let startDate = new Date();
-    let endDate = new Date();
-
-    switch (period) {
-      case 'monthly':
-        startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-        break;
-      case 'quarterly':
-        startDate = new Date(today.getFullYear(), today.getMonth() - 2, 1);
-        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-        break;
-      case 'yearly':
-        startDate = new Date(today.getFullYear(), 0, 1);
-        endDate = new Date(today.getFullYear(), 11, 31);
-        break;
-    }
-
-    const newFilter = {
-      period,
-      startDate: startDate.toISOString().split('T')[0],
-      endDate: endDate.toISOString().split('T')[0]
-    };
-
-    setFilter(newFilter);
-    handleRefresh();
-  };
 
   if (isLoading && !patientStats) {
     return (
@@ -221,7 +222,7 @@ const ReportsPage = () => {
                         <XAxis dataKey="date" />
                         <YAxis />
                         <Tooltip />
-                        <Legend />
+                        {/* <Legend /> */}
                         <Line
                           type="monotone"
                           dataKey="newPatients"
@@ -319,7 +320,7 @@ const ReportsPage = () => {
                         ))}
                       </Pie>
                       <Tooltip />
-                      <Legend />
+                      {/* <Legend /> */}
                     </PieChart>
                   </ResponsiveContainer>
                 </div>

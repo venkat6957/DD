@@ -4,6 +4,7 @@ import { useApi } from '../hooks/useApi';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import AlertDialog from '../components/common/AlertDialog';
 import api from '../services/api';
+import { usePageHeader } from '../hooks/usePageHeader';
 
 interface Manufacturer {
   id: number;
@@ -168,15 +169,41 @@ const ConfigurePage = () => {
     }
   };
 
+  // Dynamic header actions based on active tab
+  const headerActions = (
+    <>
+      {activeTab === 'manufacturers' && (
+        <button
+          onClick={handleAddManufacturer}
+          className="btn btn-primary flex items-center justify-center"
+        >
+          <Plus className="mr-1 h-4 w-4" />
+          <span className="hidden sm:inline">Add Manufacturer</span>
+          <span className="sm:hidden">Add</span>
+        </button>
+      )}
+      {activeTab === 'medicineTypes' && (
+        <button
+          onClick={handleAddMedicineType}
+          className="btn btn-primary flex items-center justify-center"
+        >
+          <Plus className="mr-1 h-4 w-4" />
+          <span className="hidden sm:inline">Add Medicine Type</span>
+          <span className="sm:hidden">Add</span>
+        </button>
+      )}
+    </>
+  );
+
+  // Set dynamic page header
+  usePageHeader({
+    title: 'Configure Masters',
+    subtitle: 'Manage master data for manufacturers and medicine types',
+    actions: headerActions,
+  });
+
   return (
     <div className="slide-in">
-      <div className="mb-4 sm:mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">Configure Masters</h1>
-        <p className="text-xs sm:text-sm text-neutral-500 mt-1">
-          Manage master data for manufacturers and medicine types
-        </p>
-      </div>
-
       {/* Tabs */}
       <div className="mb-4 sm:mb-6 border-b border-neutral-200">
         <nav className="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto">
@@ -208,14 +235,6 @@ const ConfigurePage = () => {
         <div className="space-y-4 sm:space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
             <h2 className="text-base sm:text-lg font-semibold text-neutral-900">Manufacturers</h2>
-            <button
-              onClick={handleAddManufacturer}
-              className="btn btn-primary flex items-center justify-center w-full sm:w-auto"
-            >
-              <Plus className="mr-1 h-4 w-4" />
-              <span className="hidden sm:inline">Add Manufacturer</span>
-              <span className="sm:hidden">Add</span>
-            </button>
           </div>
 
           <div className="overflow-hidden rounded-xl sm:rounded-2xl border border-neutral-200 bg-white shadow-xl">
@@ -336,14 +355,6 @@ const ConfigurePage = () => {
         <div className="space-y-4 sm:space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
             <h2 className="text-base sm:text-lg font-semibold text-neutral-900">Medicine Types</h2>
-            <button
-              onClick={handleAddMedicineType}
-              className="btn btn-primary flex items-center justify-center w-full sm:w-auto"
-            >
-              <Plus className="mr-1 h-4 w-4" />
-              <span className="hidden sm:inline">Add Medicine Type</span>
-              <span className="sm:hidden">Add</span>
-            </button>
           </div>
 
           <div className="overflow-hidden rounded-xl sm:rounded-2xl border border-neutral-200 bg-white shadow-xl">

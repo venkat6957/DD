@@ -4,6 +4,7 @@ import { Medicine, PharmacySale, PharmacySaleItem, PharmacyCustomer } from '../t
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import AlertDialog from '../components/common/AlertDialog';
 import api from '../services/api';
+import { usePageHeader } from '../hooks/usePageHeader';
 
 interface SaleItem {
   medicine: Medicine;
@@ -48,6 +49,13 @@ const PharmacyPOSPage = () => {
     title: string;
     message: string;
   }>({ type: 'info', title: '', message: '' });
+
+  // Set dynamic page header
+  usePageHeader({
+    title: 'Pharmacy POS',
+    subtitle: 'Search for medicines and create sales transactions',
+    actions: null,
+  });
 
   const showAlert = (type: 'success' | 'error' | 'warning' | 'info', title: string, message: string) => {
     setAlertConfig({ type, title, message });
@@ -280,13 +288,7 @@ const PharmacyPOSPage = () => {
 
   return (
     <div className="slide-in">
-      <div className="mb-4 sm:mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">Pharmacy POS</h1>
-        <p className="text-xs sm:text-sm text-neutral-500 mt-1">
-          Search for medicines and create sales transactions
-        </p>
-      </div>
-
+      {/* Remove static header, dynamic header is now handled by usePageHeader */}
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         {/* Left side - Medicine search and Current Sale */}
         <div className="space-y-4 sm:space-y-6">

@@ -87,11 +87,12 @@ export interface DashboardStats {
   todayAppointments: number;
   totalAppointments: number;
   totalPatients: number;
+  totalUsers: number;
   upcomingAppointments: Appointment[];
   recentPatients: Patient[];
   appointmentsByType: Array<{ name: string; value: number }>;
   appointmentsByStatus: Array<{ name: string; value: number }>;
-   treatmentsByTypeData: Array<{ name: string; value: number }>;
+  treatmentsByTypeData: Array<{ name: string; value: number }>;
 }
 
 // Pharmacy types

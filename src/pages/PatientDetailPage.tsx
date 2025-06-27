@@ -7,6 +7,7 @@ import PrescriptionForm from '../components/pharmacy/PrescriptionForm';
 import Pagination from '../components/common/Pagination';
 import { usePatient, useAppointmentsByPatient, usePrescriptionsByPatient, useTreatmentsByPatient, useAmountsByPatient } from '../hooks/useApi';
 import api from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -27,6 +28,8 @@ const PatientDetailPage = () => {
   const [showTreatmentForm, setShowTreatmentForm] = useState(false);
   const [selectedTreatmentAppointment, setSelectedTreatmentAppointment] = useState<Appointment | null>(null);
   const [treatmentDescription, setTreatmentDescription] = useState('');
+
+  const { user } = useAuth();
 
   const { data: patient, isLoading: isLoadingPatient, error: patientError, refetch: refetchPatient } = usePatient(parseInt(id!));
   const { data: appointments = [], isLoading: isLoadingAppointments, refetch: refetchAppointments } = useAppointmentsByPatient(parseInt(id!));
@@ -471,6 +474,8 @@ const PatientDetailPage = () => {
                       // Calculate the total amount for this appointment
                       const totalAmount = appointmentAmounts.reduce((sum, a) => sum + (a.amount || 0), 0);
 
+                      // Check if logged in user is the dentist for this appointment
+                      const isDentist = user && appointment.dentistId === user.id;
                       return (
                         <tr key={appointment.id} className="hover:bg-neutral-50 transition rounded-xl">
                           <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-900">
@@ -537,7 +542,7 @@ const PatientDetailPage = () => {
                             {appointment.notes || 'No notes'}
                           </td>
                           <td className="px-6 py-4 text-sm space-x-2">
-                            {canAddPrescription(appointment) && (
+                            {(canAddPrescription(appointment) && isDentist) && (
                               <button
                                 onClick={() => {
                                   setSelectedAppointment(appointment);
@@ -550,7 +555,7 @@ const PatientDetailPage = () => {
                               </button>
                             )}
                             {/* Treatment Icon */}
-                            {canAddPrescription(appointment) && (
+                            {(canAddPrescription(appointment) && isDentist) && (
                               <button
                                 onClick={() => {
                                   setSelectedTreatmentAppointment(appointment);

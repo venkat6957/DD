@@ -42,7 +42,7 @@ const AppointmentsPage = () => {
   // Set page header with actions
   usePageHeader({
     title: 'Appointments',
-    subtitle: `Showing ${startIndex + 1} to ${Math.min(startIndex + ITEMS_PER_PAGE, sortedAppointments.length)} of ${sortedAppointments.length} appointments`,
+    subtitle: 'Schedule and manage consultations with ease',
     actions: (
       <div className="flex space-x-2 sm:space-x-3">
         <Link to="/calendar" className="btn btn-outline flex items-center">
@@ -100,6 +100,8 @@ const AppointmentsPage = () => {
     const appointmentDate = new Date(`${appointment.date}T${appointment.startTime}`);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    // Disallow edit/cancel if status is completed, even if today or future
+    if (appointment.status === 'completed') return false;
     return appointmentDate >= today;
   };
 

@@ -58,7 +58,7 @@ const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
         {/* Right: User menu, notifications, etc. */}
         <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
           {/* Notifications */}
-          <div className="relative">
+          {/* <div className="relative">
             <button
               type="button"
               className="rounded-xl p-1 sm:p-2 text-neutral-600 hover:bg-white/30 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-200"
@@ -71,14 +71,14 @@ const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
               </span>
             </button>
             
-            {/* Notifications dropdown */}
+
             {notificationsOpen && (
               <div className="absolute right-0 mt-2 w-72 sm:w-80 origin-top-right rounded-xl sm:rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl ring-1 ring-black/5 focus:outline-none border border-white/20">
                 <div className="py-2">
                   <div className="border-b border-neutral-200/50 px-3 sm:px-4 py-3">
                     <h3 className="font-semibold gradient-text text-sm sm:text-base">Notifications</h3>
                   </div>
-                  {/* Notification items */}
+                
                   <div className="max-h-48 sm:max-h-60 overflow-y-auto custom-scrollbar">
                     <div className="border-b border-neutral-100/50 px-3 sm:px-4 py-3 hover:bg-primary-50/50 transition-colors duration-200">
                       <p className="text-xs sm:text-sm font-medium text-neutral-900">New appointment scheduled</p>
@@ -101,16 +101,16 @@ const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* Help */}
-          <button
+          {/* <button
             type="button"
             className="rounded-xl p-1 sm:p-2 text-neutral-600 hover:bg-white/30 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-200 hidden sm:block"
           >
             <span className="sr-only">Help</span>
             <HelpCircle className="h-5 w-5 sm:h-6 sm:w-6" />
-          </button>
+          </button> */}
 
           {/* User menu */}
           <div className="relative">
@@ -140,7 +140,7 @@ const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
                   <p className="text-xs sm:text-sm font-semibold text-neutral-900 truncate">{user?.name}</p>
                   <p className="text-xs text-neutral-500 truncate">{user?.email}</p>
                 </div>
-                <a
+                {/* <a
                   href="#"
                   className="block px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-neutral-700 hover:bg-primary-50/50 transition-colors duration-200"
                 >
@@ -151,7 +151,7 @@ const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
                   className="block px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-neutral-700 hover:bg-primary-50/50 transition-colors duration-200"
                 >
                   Settings
-                </a>
+                </a> */}
                 <button
                   onClick={logout}
                   className="flex w-full items-center px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-neutral-700 hover:bg-error-50/50 hover:text-error-600 transition-colors duration-200"

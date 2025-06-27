@@ -60,7 +60,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       >
         <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4 border-b border-white/20">
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <ToothLogo className="h-6 w-6 sm:h-8 sm:w-8" />
+            {/* <ToothLogo className="h-6 w-6 sm:h-8 sm:w-8" /> */}
+             <img src="images/tooth-logo.svg" alt="Tooth Icon" className="h-6 w-6 sm:h-8 sm:w-8" />
             <span className="text-lg sm:text-xl font-bold gradient-text">DentalCare</span>
           </div>
           <button

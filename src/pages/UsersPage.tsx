@@ -6,6 +6,7 @@ import ConfirmDialog from '../components/common/ConfirmDialog';
 import AlertDialog from '../components/common/AlertDialog';
 import { useApi } from '../hooks/useApi';
 import api from '../services/api';
+import { usePageHeader } from '../hooks/usePageHeader';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -164,6 +165,21 @@ const UsersPage = () => {
     }
   };
 
+  usePageHeader({
+    title: 'User Management',
+    subtitle: 'Manage system users and their roles',
+    actions: (
+      <button
+        onClick={handleAddUser}
+        className="btn btn-primary flex items-center justify-center w-full sm:w-auto"
+      >
+        <Plus className="mr-1 h-4 w-4" />
+        <span className="hidden sm:inline">Add New User</span>
+        <span className="sm:hidden">Add User</span>
+      </button>
+    ),
+  });
+
   if (isLoadingUsers || isLoadingRoles) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -183,7 +199,7 @@ const UsersPage = () => {
 
   return (
     <div className="slide-in">
-      <div className="mb-4 sm:mb-6 flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+      {/* <div className="mb-4 sm:mb-6 flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">User Management</h1>
           <p className="text-xs sm:text-sm text-neutral-500 mt-1">
@@ -198,7 +214,7 @@ const UsersPage = () => {
           <span className="hidden sm:inline">Add New User</span>
           <span className="sm:hidden">Add User</span>
         </button>
-      </div>
+      </div> */}
 
       {/* Search */}
       <div className="mb-4 sm:mb-6">

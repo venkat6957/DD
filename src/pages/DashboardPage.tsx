@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { ArrowRight, Calendar, User, Users, TrendingUp, Clock, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { useAppointments, usePatients } from '../hooks/useApi';
+import { useAppointments, usePatients, useUsers } from '../hooks/useApi';
 import { DashboardStats } from '../types';
 import { usePageHeader } from '../hooks/usePageHeader';
 
 const DashboardPage = () => {
   const { data: appointments = [], isLoading: isLoadingAppointments } = useAppointments();
   const { data: patients = [], isLoading: isLoadingPatients } = usePatients();
+  const { data: users = [], isLoading: isLoadingUsers } = useUsers();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [showTreatmentByType, setShowTreatmentByType] = useState(true);
   
@@ -17,23 +18,17 @@ const DashboardPage = () => {
   // Set page header
   usePageHeader({
     title: 'Dashboard',
-    subtitle: `Welcome back! Here's what's happening at your clinic today. ${new Date().toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })}`,
+    subtitle: 'Welcome back!'
   });
 
   useEffect(() => {
-    if (!isLoadingAppointments && !isLoadingPatients) {
+    if (!isLoadingAppointments && !isLoadingPatients && !isLoadingUsers) {
       const today = new Date().toISOString().split('T')[0];
-      
       // Calculate stats from API data
-      const todayAppointments = appointments.filter(a => a.date === today).length;
+      const todayAppointments = appointments.filter((a: any) => a.date === today).length;
       const upcomingAppointments = appointments
-        .filter(a => a.date >= today && (a.status === 'scheduled' || a.status === 'confirmed'))
-        .sort((a, b) => {
+        .filter((a: any) => a.date >= today && (a.status === 'scheduled' || a.status === 'confirmed'))
+        .sort((a: any, b: any) => {
           const dateA = new Date(`${a.date}T${a.startTime}`);
           const dateB = new Date(`${b.date}T${b.startTime}`);
           return dateA.getTime() - dateB.getTime();
@@ -41,11 +36,11 @@ const DashboardPage = () => {
         .slice(0, 5);
 
       const recentPatients = [...patients]
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .slice(0, 5);
 
       // Calculate appointment type stats
-      const appointmentTypes = appointments.reduce((acc: { [key: string]: number }, curr) => {
+      const appointmentTypes = appointments.reduce((acc: { [key: string]: number }, curr: any) => {
         acc[curr.type] = (acc[curr.type] || 0) + 1;
         return acc;
       }, {});
@@ -56,7 +51,7 @@ const DashboardPage = () => {
       }));
 
       // Calculate appointment status stats
-      const appointmentStatuses = appointments.reduce((acc: { [key: string]: number }, curr) => {
+      const appointmentStatuses = appointments.reduce((acc: { [key: string]: number }, curr: any) => {
         acc[curr.status] = (acc[curr.status] || 0) + 1;
         return acc;
       }, {});
@@ -67,7 +62,7 @@ const DashboardPage = () => {
       }));
 
       // Calculate treatment type stats
-      const treatmentByType = appointments.reduce((acc: { [key: string]: number }, curr) => {
+      const treatmentByType = appointments.reduce((acc: { [key: string]: number }, curr: any) => {
         if (curr.treatmentType) {
           acc[curr.treatmentType] = (acc[curr.treatmentType] || 0) + 1;
         }
@@ -83,6 +78,7 @@ const DashboardPage = () => {
         todayAppointments,
         totalAppointments: appointments.length,
         totalPatients: patients.length,
+        totalUsers: users.length,
         upcomingAppointments,
         recentPatients,
         appointmentsByType,
@@ -90,9 +86,9 @@ const DashboardPage = () => {
         treatmentsByTypeData,
       });
     }
-  }, [appointments, patients, isLoadingAppointments, isLoadingPatients]);
+  }, [appointments, patients, users, isLoadingAppointments, isLoadingPatients, isLoadingUsers]);
 
-  if (isLoadingAppointments || isLoadingPatients) {
+  if (isLoadingAppointments || isLoadingPatients || isLoadingUsers) {
     return (
       <div className="flex h-64 items-center justify-center">
         <div className="spinner"></div>
@@ -174,6 +170,28 @@ const DashboardPage = () => {
           <div className="mt-4">
             <Link to="/patients" className="text-xs font-medium text-accent-600 hover:text-accent-700 transition-colors duration-200 flex items-center">
               View all patients
+              <ArrowRight className="ml-1 h-3 w-3" />
+            </Link>
+          </div>
+        </div>
+
+        <div className="stats-card border-l-4 border-blue-400">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm font-medium text-neutral-500">Total Users</p>
+              <p className="mt-2 text-3xl font-bold text-neutral-900">{stats.totalUsers}</p>
+              <p className="mt-1 text-xs text-blue-600">
+                <Users className="inline h-3 w-3 mr-1" />
+                System users
+              </p>
+            </div>
+            <div className="rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 p-3 text-blue-600">
+              <Users className="h-6 w-6" />
+            </div>
+          </div>
+          <div className="mt-4">
+            <Link to="/users" className="text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200 flex items-center">
+              View all users
               <ArrowRight className="ml-1 h-3 w-3" />
             </Link>
           </div>

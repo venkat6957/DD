@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { ToothLogo } from '../components/common/ToothLogo';
+import Footer from '../components/layout/Footer';
 
 const LoginPage = () => {
   const { login, error, isLoading } = useAuth();
@@ -19,45 +19,43 @@ const LoginPage = () => {
 
     try {
       await login(email, password);
-      // If login fails, error will be set in the context and handled below
     } catch (err) {
       setLoginError(error || 'Failed to log in');
     }
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-gradient-to-br from-primary-500 via-purple-500 to-accent-500">
-      {/* Top Bar */}
-      <div className="flex justify-between items-center px-8 py-6">
-        <div className="flex items-center space-x-2">
-          <ToothLogo className="h-8 w-8" />
-          <span className="text-2xl font-extrabold text-neutral-900">DentalCare</span>
+    <div className="min-h-screen flex items-stretch justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-white">
+      {/* Left: Logo and Welcome */}
+      <div className="md:w-1/2 flex flex-col items-center justify-center p-6 md:p-10 bg-gradient-to-br from-primary-500 via-purple-500 to-accent-500 text-white relative">
+        <div className="absolute top-2 left-2 md:top-4 md:left-4 hidden md:block z-10">
+          <img src="images/tooth-logo.svg" alt="Tooth Icon" className="h-10 w-10 md:h-16 md:w-16 drop-shadow-xl" />
         </div>
-        {/* <div>
-          <span className="text-neutral-700 mr-2">Don't have an account?</span>
-          <a
-            href="#"
-            className="inline-block px-6 py-2 rounded-xl bg-primary-500 text-white font-bold shadow-lg hover:bg-primary-600 transition"
-          >
-            Sign up
-          </a>
-        </div> */}
+        <div className="flex flex-col items-center justify-center flex-1 gap-6 mt-4 mb-4 md:mt-6 md:mb-6">
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-2 tracking-tight">Kadali Health</h1>
+          <p className="text-lg md:text-2xl font-medium opacity-90 mb-4 text-center max-w-xs md:max-w-md">
+            Welcome Back!<br />
+            Log in to manage your appointments and patient records.
+          </p>
+        </div>
+        <div className="flex-1 flex items-end justify-center w-full pb-2 md:pb-0">
+          <img src="images/dental.svg" alt="Dental Illustration" className="w-32 h-32 sm:w-40 sm:h-40 md:w-72 md:h-72 lg:w-96 lg:h-96 opacity-80 max-h-[40vh] md:max-h-[60vh]" />
+        </div>
       </div>
-
-      {/* Main Content */}
-      <div className="flex flex-1 items-center justify-center">
-        <div className="w-full max-w-lg">
-          <div className="rounded-2xl bg-white shadow-2xl px-10 py-12">
-            <h1 className="text-4xl font-extrabold text-neutral-900 text-center mb-8">DentalCare</h1>
+      {/* Right: Login Form */}
+      <div className="md:w-1/2 flex flex-col justify-between p-0 md:p-0 min-h-screen bg-transparent">
+        <div className="flex-1 flex items-center justify-center p-4 md:p-12">
+          <div className="w-full max-w-md bg-white/90 rounded-2xl shadow-xl p-6 md:p-10">
+            <h2 className="text-2xl font-bold text-blue-900 mb-8 text-center">Sign in to your account</h2>
             {(loginError || error) && (
-              <div className="mb-4 rounded-md bg-error-50 p-3 text-sm text-error-800 text-center">
+              <div className="mb-4 rounded-md bg-red-100 p-3 text-sm text-red-700 text-center">
                 {loginError || error}
               </div>
             )}
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-1">
-                  Work Email
+                <label htmlFor="email" className="block text-sm font-medium text-blue-900 mb-1">
+                  Email Address
                 </label>
                 <input
                   id="email"
@@ -67,12 +65,12 @@ const LoginPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="input block w-full px-4 py-3 rounded-xl border border-neutral-200 bg-neutral-50 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 text-neutral-900 placeholder-neutral-400 transition text-base"
-                  placeholder="Enter your work email"
+                  className="w-full px-4 py-3 rounded-xl border border-blue-200 bg-blue-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-blue-900 placeholder-blue-400"
+                  placeholder="name@example.com"
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-neutral-700 mb-1">
+                <label htmlFor="password" className="block text-sm font-medium text-blue-900 mb-1">
                   Password
                 </label>
                 <input
@@ -83,8 +81,8 @@ const LoginPage = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="input block w-full px-4 py-3 rounded-xl border border-neutral-200 bg-neutral-50 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 text-neutral-900 placeholder-neutral-400 transition text-base"
-                  placeholder="Enter password"
+                  className="w-full px-4 py-3 rounded-xl border border-blue-200 bg-blue-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-blue-900 placeholder-blue-400"
+                  placeholder="••••••••"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -93,33 +91,35 @@ const LoginPage = () => {
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
-                    className="h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
+                    className="h-4 w-4 rounded border-blue-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <label htmlFor="remember-me" className="ml-2 block text-sm text-neutral-700">
+                  <label htmlFor="remember-me" className="ml-2 text-sm text-blue-900">
                     Remember me
                   </label>
                 </div>
-                <a href="#" className="text-sm font-semibold text-primary-600 hover:text-primary-500">
-                  Forgot Password?
+                <a href="#" className="text-sm font-semibold text-blue-600 hover:text-blue-500">
+                  Forgot password?
                 </a>
               </div>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="btn-gradient w-full py-3 rounded-xl text-lg font-bold shadow-lg transition-all duration-200"
+                className="btn btn-primary text-white w-full py-3 rounded-xl font-bold shadow-lg hover:brightness-110 transition-all"
               >
-                {isLoading ? 'Signing in...' : 'Log In'}
+                {isLoading ? 'Signing in...' : 'Sign In'}
               </button>
             </form>
-          
-            <div className="mt-8 text-center text-xs text-neutral-400">
+            <div className="mt-8 text-center text-xs text-blue-400">
               Demo accounts:<br />
-              <span className="font-medium text-neutral-700">Admin:</span> admin@example.com &nbsp;|&nbsp;
-              <span className="font-medium text-neutral-700">Dentist:</span> dentist@example.com &nbsp;|&nbsp;
-              <span className="font-medium text-neutral-700">Receptionist:</span> receptionist@example.com <br />
+              <span className="font-medium text-blue-700">Admin:</span> admin@example.com &nbsp;|&nbsp;
+              <span className="font-medium text-blue-700">Dentist:</span> dentist@example.com &nbsp;|&nbsp;
+              <span className="font-medium text-blue-700">Receptionist:</span> receptionist@example.com <br />
               Password: <span className="font-mono">password123</span>
             </div>
           </div>
+        </div>
+        <div className="w-full">
+          <Footer />
         </div>
       </div>
     </div>
